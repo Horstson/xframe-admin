@@ -7,7 +7,7 @@ import dev.xframe.admin.view.XColumn;
 
 public class User {
 
-	@XColumn(value="用户名", show=XColumn.xor_edit, primary=true)
+	@XColumn(value="用户名", primary=true)
 	private String name;
 	@XColumn("手机")
 	private String phone;
