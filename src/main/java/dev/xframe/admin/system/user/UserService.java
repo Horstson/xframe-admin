@@ -50,15 +50,15 @@ public class UserService {
 	    return user;
 	}
 
-    @HttpMethods.PUT
-	public Object edit(@HttpArgs.Body User user) {
-		User ex = sysRepo.fetchUser(user.getName());
-		ex.setEmail(user.getEmail());
-		ex.setPhone(user.getPhone());
-		ex.setRoles(user.getRoles());
-		sysRepo.saveUser(ex);//sync
-		return clearPass(user);
-	}
+//    @HttpMethods.PUT
+//	public Object edit(@HttpArgs.Body User user) {
+//		User ex = sysRepo.fetchUser(user.getName());
+//		ex.setEmail(user.getEmail());
+//		ex.setPhone(user.getPhone());
+//		ex.setRoles(user.getRoles());
+//		sysRepo.saveUser(ex);//sync
+//		return clearPass(user);
+//	}
 	
 	@HttpMethods.DELETE
 	public Object delete(@HttpArgs.Body User user) {
