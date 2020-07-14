@@ -1,6 +1,5 @@
 package dev.xframe.admin.system.user;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,32 +27,39 @@ public class UserService {
 	 */
 	@HttpMethods.GET("ini")
 	public Object get() {
-		List<User> datas = sysRepo.fetchUsers();
-		setRoleDesc(datas);
-        return datas;
+		return clearPass(sysRepo.fetchUsers());
 	}
 	
 	@HttpMethods.POST
 	public Object add(@HttpArgs.Body User user) {
 	    validateUser(user);
 		user.newCTime();
-		sysRepo.addUser(user);
-		setRoleDesc(user);
-		return user;
+		sysRepo.addUser(user);//sync
+		return clearPass(user);
 	}
 
 	private void validateUser(User user) {
-        
     }
 	
-	private void setRoleDesc(List<User> users) {
-	    users.forEach(this::setRoleDesc);
+	private List<User> clearPass(List<User> users) {
+	    users.forEach(this::clearPass);
+	    return users;
 	}
-	private void setRoleDesc(User user) {
-		user.setPassw("");
-		user.setRolesDesc(Arrays.stream(user.getRoles()).mapToObj(r -> sysCtx.getRole(r).getName()).toArray());
+	private User clearPass(User user) {
+	    user.setPassw("");
+	    return user;
 	}
 
+    @HttpMethods.PUT
+	public Object edit(@HttpArgs.Body User user) {
+		User ex = sysRepo.fetchUser(user.getName());
+		ex.setEmail(user.getEmail());
+		ex.setPhone(user.getPhone());
+		ex.setRoles(user.getRoles());
+		sysRepo.saveUser(ex);//sync
+		return clearPass(user);
+	}
+	
 	@HttpMethods.DELETE
 	public Object delete(@HttpArgs.Body User user) {
 		sysRepo.deleteUser(user);
@@ -66,8 +72,7 @@ public class UserService {
 			@HttpArgs.Param @XColumn("手机") String phone,
 			@HttpArgs.Param @XColumn("邮箱") String email
 			){
-	    List<User> datas = sysRepo.fetchUsers();
-	    setRoleDesc(datas);
+	    List<User> datas = clearPass(sysRepo.fetchUsers());
 		if(!XStrings.isEmpty(name)) {
 			return datas.stream().filter(u->u.getName().contains(name)).collect(Collectors.toList());
 		}
