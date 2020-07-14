@@ -53,9 +53,12 @@ var xmodel = {
         }
     }
 }
-
-var xd = {
-
+var getValFromModel = function(model, column) {
+    let val = model[column.key];
+    if(column.type == xTypes._enum || column.type == xTypes._mult) {
+        return xenumText(column.enumKey, val);
+    }
+    return val;
 }
 
 //table detail
@@ -84,7 +87,9 @@ var xtd = {
             xselect2(this.qryInputDom(xinput.key), xinput);
         } else {
             parent.append(this.qryText.format(xinput.key, xinput.hint));
-            if(xinput.type==xTypes._time) xdatepicker(this.qryInputDom(xinput.key));
+            if(xinput.type==xTypes._datetime) xdatepicker(this.qryInputDom(xinput.key));
+            if(xinput.type==xTypes._date) xdatepicker(this.qryInputDom(xinput.key), xformatDate);
+            if(xinput.type==xTypes._date) xdatepicker(this.qryInputDom(xinput.key), xformatTime);
         }
     },
     queryDatasFunc: function(detail, op) {
@@ -162,7 +167,7 @@ var xtd = {
             var _td = 0;
             for(let column of detail.columns){
                 if(xcolumn.list(column)) {
-                    this.tabletrDom(_tr).append($(this.tabletd.format(_tr, (++_td), model[column.key])));
+                    this.tabletrDom(_tr).append($(this.tabletd.format(_tr, (++_td), getValFromModel(model, column))));
                 }
             }
             //options td
