@@ -39,5 +39,4 @@ public class RoleService {
 		}
 		throw new LogicException("角色不存在");
 	}
-			return ex;
 }
